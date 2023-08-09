@@ -8,4 +8,4 @@ To run program, have python, pygame, and numpy installed. Run chess.py located i
 
 - Different dificulties of chess opponents
 - Player vs Player
-- Play vs AI with white or black pieces
+- Play vs Bots with white or black pieces
