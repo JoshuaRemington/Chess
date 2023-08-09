@@ -21,13 +21,13 @@ class Menu():
         screen.blit(text, (815, 150))
 
         font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render('c - Change AI Type', True, TEXT_COLOR)
+        text = font.render('c - Change Bot Type', True, TEXT_COLOR)
         screen.blit(text, (815, 200))
 
         font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render('w - Play AI as white', True, TEXT_COLOR)
+        text = font.render('w - Play Bot as white', True, TEXT_COLOR)
         screen.blit(text, (815, 250))
 
         font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render('b - Play AI as black', True, TEXT_COLOR)
+        text = font.render('b - Play Bot as black', True, TEXT_COLOR)
         screen.blit(text, (815, 300))

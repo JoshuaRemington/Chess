@@ -51,7 +51,7 @@ class Main():
                 if ai.ai_mode == 'Random Moves':
                     time.sleep(1)
                     ai.play_random_move()
-                elif ai.ai_mode == 'Simple AI':
+                elif ai.ai_mode == 'Simple Bot':
                     time.sleep(1)
                     ai.simple_ai()
                 elif ai.ai_mode == 'Beginner Bot':
@@ -59,10 +59,6 @@ class Main():
                     if val == 10000 or val == -10000:
                         game.current_turn = 'None'
                     print(ai.testing_moves_checked)
-                    if self.ai.color == 'white':
-                        self.ai.color = 'black'
-                    else:
-                        self.ai.color = 'white'
                 game.change_turn()
 
             pygame.display.flip()

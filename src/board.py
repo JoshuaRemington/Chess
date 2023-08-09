@@ -12,7 +12,6 @@ class Board():
 
     def __init__(self):
         self.squares = np.array([Square(i) for i in range(64)])
-        self.__put_start_pieces_in_location()
         self.promoting_pawn = False
         self.promoting_pawn_color = 'white'
         self.promotion_square = None
@@ -20,7 +19,53 @@ class Board():
         self.in_check = "None"
         self.white_moves = []
         self.black_moves = []
-        self.get_all_moves(None)
+
+    '''def fen_to_board(self, fen):
+        current_loc = -1
+        for i in fen:
+            current_loc += 1
+            if current_loc != 64:
+                match i:
+                    case 'p':
+                        self.squares[current_loc] = Square(
+                            current_loc, Pawn('black'))
+                    case 'b':
+                        self.squares[current_loc] = Square(
+                            current_loc, Bishop('black'))
+                    case 'n':
+                        self.squares[current_loc] = Square(
+                            current_loc, Knight('black'))
+                    case 'k':
+                        self.squares[current_loc] = Square(
+                            current_loc, King('black'))
+                    case 'q':
+                        self.squares[current_loc] = Square(
+                            current_loc, Queen('black'))
+                    case 'r':
+                        self.squares[current_loc] = Square(
+                            current_loc, Rook('black'))
+                    case 'P':
+                        self.squares[current_loc] = Square(
+                            current_loc, Pawn('white'))
+                    case 'B':
+                        self.squares[current_loc] = Square(
+                            current_loc, Bishop('white'))
+                    case 'N':
+                        self.squares[current_loc] = Square(
+                            current_loc, Knight('white'))
+                    case 'K':
+                        self.squares[current_loc] = Square(
+                            current_loc, King('white'))
+                    case 'Q':
+                        self.squares[current_loc] = Square(
+                            current_loc, Queen('white'))
+                    case 'R':
+                        self.squares[current_loc] = Square(
+                            current_loc, Rook('white'))
+                    case '/':
+                        current_loc -= 1
+                    case _:
+                        current_loc += int(i) - 1'''
 
     def check_for_checks(self, move_list):
         good_move_list = []
@@ -28,7 +73,6 @@ class Board():
         for move in move_list:
             add = True
             piece = self.squares[move.initial_loc.location].piece
-            moved_before = piece.moved_from_start
             self.make_move(move, piece, True)
             if piece.name == 'pawn':
                 if self.promoting_pawn:
@@ -37,7 +81,6 @@ class Board():
             if piece.name == 'king' and abs(move.final_loc.location - move.initial_loc.location) == 2:
                 king_castling_moves.append(move)
                 add = False
-            piece.moved_from_start = True
             if piece.color == 'white':
                 list = self.get_all_moves(True, 'black')
             else:
@@ -53,7 +96,6 @@ class Board():
                 good_move_list.append(move)
 
             self.unmake_move(move, piece, True)
-            piece.moved_from_start = moved_before
 
         for mov in king_castling_moves:
             if self.allowing_castle(mov):
@@ -89,13 +131,13 @@ class Board():
                     if self.last_move.final_loc.location == move.final_loc.location-direction:
                         self.squares[move.final_loc.location -
                                      direction].piece = None
-            if (move.final_loc.location < 8 or move.final_loc.location > 55) and not testing:
+            if (move.final_loc.location < 8 or move.final_loc.location > 55):
                 self.promoting_pawn = True
                 self.promoting_pawn_color = piece.color
                 self.promotion_square = self.squares[move.final_loc.location]
 
         if piece.name == 'king':
-            if abs(move.initial_loc.location - move.final_loc.location) == 2 and not testing:
+            if abs(move.initial_loc.location - move.final_loc.location) == 2:
                 self.castle_rook_piece(move, piece)
         self.set_en_passant_false(move)
         if not testing:
@@ -529,37 +571,10 @@ class Board():
         self.white_moves.sort(key=lambda x: x.capture_worth, reverse=True)
         self.black_moves.sort(key=lambda x: x.capture_worth, reverse=True)
 
+
+'''
     def __put_start_pieces_in_location(self):
-        '''
-        self.squares[11] = Square(11, Pawn('black'))
-        self.squares[0] = Square(0, Rook("black"))
-        self.squares[18] = Square(18, Pawn('white'))
-        self.squares[20] = Square(20, Queen("white"))
-        '''
-        for loc in range(8, 16):
-            self.squares[loc] = Square(loc, Pawn('black'))
-            self.squares[loc+40] = Square(loc+40, Pawn('white'))
-
-        self.squares[0] = Square(0, Rook("black"))
-        self.squares[7] = Square(7, Rook("black"))
-        self.squares[56] = Square(56, Rook("white"))
-        self.squares[63] = Square(63, Rook("white"))
-
-        self.squares[1] = Square(1, Knight("black"))
-        self.squares[6] = Square(6, Knight("black"))
-        self.squares[57] = Square(57, Knight("white"))
-        self.squares[62] = Square(62, Knight("white"))
-
-        self.squares[2] = Square(2, Bishop("black"))
-        self.squares[5] = Square(5, Bishop("black"))
-        self.squares[58] = Square(58, Bishop("white"))
-        self.squares[61] = Square(61, Bishop("white"))
-
-        self.squares[3] = Square(3, Queen("black"))
-        self.squares[59] = Square(59, Queen("white"))
-
-        self.squares[4] = Square(4, King("black"))
-        self.squares[60] = Square(60, King("white"))
+        self.fen_to_board('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')'''
 
 
 white_pawn_table = np.array([
@@ -581,7 +596,7 @@ white_knight_table = np.array([
     -30,  0, 15, 20, 20, 15,  0, -30,
     -30,  5, 10, 15, 15, 10,  5, -30,
     -40, -20,  0,  5,  5,  0, -20, -40,
-    -50, -40, -30, -30, -30, -30, -40, -50,
+    -50, -40, -30, -30, -30, -30, -40, -50
 ])
 
 white_bishop_table = np.array([
@@ -592,7 +607,7 @@ white_bishop_table = np.array([
     -10,  0, 10, 10, 10, 10,  0, -10,
     -10, 10, 10, 10, 10, 10, 10, -10,
     -10,  5,  0,  0,  0,  0,  5, -10,
-    -20, -10, -10, -10, -10, -10, -10, -20,
+    -20, -10, -10, -10, -10, -10, -10, -20
 ])
 
 white_rook_table = np.array([
@@ -639,7 +654,7 @@ black_pawn_table = np.array([
     5,  5, 10, 25, 25, 10,  5,  5,
     10, 10, 20, 30, 30, 20, 10, 10,
     50, 50, 50, 50, 50, 50, 50, 50,
-    0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0
 ])
 
 black_knight_table = np.array([
@@ -650,7 +665,7 @@ black_knight_table = np.array([
     -30,  5, 15, 20, 20, 15,  5, -30,
     -30,  0, 10, 15, 15, 10,  0, -30,
     -40, -20,  0,  0,  0,  0, -20, -40,
-    -50, -40, -30, -30, -30, -30, -40, -50,
+    -50, -40, -30, -30, -30, -30, -40, -50
 ])
 
 black_bishop_table = np.array([
@@ -661,7 +676,7 @@ black_bishop_table = np.array([
     -10,  5,  5, 10, 10,  5,  5, -10,
     -10,  0,  5, 10, 10,  5,  0, -10,
     -10,  0,  0,  0,  0,  0,  0, -10,
-    -20, -10, -10, -10, -10, -10, -10, -20,
+    -20, -10, -10, -10, -10, -10, -10, -20
 ])
 
 black_rook_table = np.array([
@@ -676,14 +691,14 @@ black_rook_table = np.array([
 ])
 
 black_queen_table = np.array([
-    -20, -10, -10, -5, -5, -10, -10, -20
+    -20, -10, -10, -5, -5, -10, -10, -20,
     - 10,  0,  5,  0,  0,  0,  0, -10,
     -10,  5,  5,  5,  5,  5,  0, -10,
     0,  0,  5,  5,  5,  5,  0, -5,
     -5,  0,  5,  5,  5,  5,  0, -5,
     -10,  0,  5,  5,  5,  5,  0, -10,
     -10,  0,  0,  0,  0,  0,  0, -10,
-    -20, -10, -10, -5, -5, -10, -10, -20,
+    -20, -10, -10, -5, -5, -10, -10, -20
 ])
 
 
