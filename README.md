@@ -1,4 +1,4 @@
-# Chess (WIP)
+# Chess
 
 Simple Chess game created in python that uses the minimax algorithm and alpha beta pruning
 
